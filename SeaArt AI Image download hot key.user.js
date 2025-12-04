@@ -132,13 +132,13 @@
     }
 
     document.body.addEventListener('keydown', function (e) {
-        if ('t' === (e.ctrlKey && e.key)) {
+        if ('t' === (e.ctrlKey && e.altKey && e.key)) {
             if (!getViewer()) {
                 return;
             }
             execDownload(true);
         }
-        else if ('g' === (e.ctrlKey && e.key)) {
+        else if ('g' === (e.ctrlKey && e.altKey && e.key)) {
             if (!getViewer()) {
                 return;
             }
