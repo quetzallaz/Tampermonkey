@@ -14,6 +14,7 @@
     'use strict';
 
     const queue = 3;
+    const execHours = [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18];
     let timeIds = new Array();
 
     main();
@@ -43,16 +44,27 @@
     function interval()
     {
         let now = new Date();
-        let delay = Math.ceil((now.getSeconds() + 2) / 60) * 60 - now.getSeconds();
+        let delay = Math.ceil((now.getSeconds() + 2) / 600) * 600 - now.getSeconds();
 
         return delay * 1000;
+    }
+
+    function IsExecHours()
+    {
+        let now = new Date();
+        let hour = now.getHours();
+        return execHours.find(item => hour === item) ?? false;
     }
 
     function main() {
         execInterval();
 
-        var iframe = document.getElementById("myIframe");
-        var inner = iframe.contentDocument || iframe.contentWindow.document;
+        if ( ! IsExecHours()) {
+            return;
+        }
+
+        let iframe = document.getElementById("myIframe");
+        let inner = iframe.contentDocument || iframe.contentWindow.document;
 
         const buttons = inner.getElementsByClassName("work-flow-bottom-btn-main-text");
         if (0 == buttons.length)
