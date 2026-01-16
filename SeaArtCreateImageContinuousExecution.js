@@ -81,6 +81,8 @@
             return;
         }
 
+        let list = document.getElementsByClassName("c-easy-task-view-scroll-wrap")[0];
+        list.scrollTop = list.scrollHeight;
         if (queue <= document.getElementsByClassName("message-process-container").length)
         {
             return;
