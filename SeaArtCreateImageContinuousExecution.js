@@ -13,7 +13,7 @@
 {
     'use strict';
 
-    const queue = 3;
+    const queue = 1;
     let timeIds = new Array();
 
     function execInterval()
@@ -41,12 +41,12 @@
     function interval()
     {
         let now = new Date();
-        let delay = Math.ceil((now.getSeconds() + 2) / 60) * 60 - now.getSeconds();
+        let delay = Math.ceil((now.getSeconds() + 2) / 30) * 30 - now.getSeconds();
 
         return delay * 1000;
     }
 
-    function getText(index)
+    function getTexts(index)
     {
         let text = document.getElementById("prompt-list");
         if (null == text)
@@ -62,7 +62,7 @@
         {
             return null;
         }
-        return list[index];
+        return [list[index], list[index+1]];
     }
 
     let index = 1;
@@ -75,37 +75,59 @@
             return;
         }
 
-        let text = getText(index);
-        if (null == text)
+        let texts = getTexts(index);
+        if (null == texts)
         {
             return;
         }
 
-        let list = document.getElementsByClassName("c-easy-task-view-scroll-wrap")[0];
-        list.scrollTop = list.scrollHeight;
         if (queue <= document.getElementsByClassName("message-process-container").length)
         {
             return;
         }
 
-        let textarea = document.getElementById("easyGenerateInput");
-        textarea.value = text;
-        textarea.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }));
-        button.click();
-        index += 2;
+        let divN = document.getElementsByClassName("negative-prompt-input-box")[0];
+        if (null == divN)
+        {
+            console.log("divN");
+            return;
+        }
+        let textareaN = divN.querySelectorAll(".el-textarea__inner")[0];
+        if (null == textareaN)
+        {
+            console.log("textareaN");
+            return;
+        }
+
+        let textareaP = document.getElementById("easyGenerateInput");
+
+        textareaN.value = texts[0];
+        textareaN.dispatchEvent(new Event("input", { bubbles: true, cancelable: false }));
+        setTimeout(() => {
+            textareaP.value = texts[1];
+            textareaP.dispatchEvent(new Event("input", { bubbles: true, cancelable: false }));
+            setTimeout(() => {
+                button.click();
+                index += 3;
+                let list = document.getElementsByClassName("c-easy-task-view-scroll-wrap")[0];
+                list.scrollTop = list.scrollHeight;
+            }, 1000);
+        }, 1000);
 
         return;
     }
 
-    // ON/OFF切り替えボタンを作成する関数
     function createTextarea() {
         const textarea = document.createElement("textarea");
         textarea.id = "prompt-list";
         textarea.cols = "1024";
         textarea.rows = "1";
-
         let div = document.getElementsByClassName("bottom-input-area")[0];
         div.appendChild(textarea);
+
+        textarea.addEventListener('input', () => {
+            index = 1;
+        });
     }
 
     setTimeout(() => {
