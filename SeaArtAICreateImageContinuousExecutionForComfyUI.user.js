@@ -13,38 +13,14 @@
 {
     'use strict';
 
-    const queue = 3;
-    const execHours = [2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 16, 17, 18];
-    let timeIds = new Array();
-
-    main();
-
-    function execInterval()
-    {
-        stopInterval();
-		timeIds.push(setInterval(main, interval()));
-        return;
-	}
-
-    function stopInterval()
-    {
-		if (0 == timeIds.length) {
-            return;
-        }
-
-        let id = null;
-        while (typeof (id = timeIds.shift()) !== "undefined")
-        {
-            clearInterval(id);
-        }
-
-        return;
-	}
+    const queue = 1;
+    const execHours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+    let intervalId;
 
     function interval()
     {
         let now = new Date();
-        let delay = Math.ceil((now.getSeconds() + 2) / 600) * 600 - now.getSeconds();
+        let delay = Math.ceil((now.getSeconds() + 2) / 300) * 300 - now.getSeconds();
 
         return delay * 1000;
     }
@@ -57,7 +33,7 @@
     }
 
     function main() {
-        execInterval();
+        intervalId ??= setInterval(main, interval());
 
         if ( ! IsExecHours()) {
             return;
@@ -79,4 +55,8 @@
 
         return;
     }
+
+    setTimeout(() => {
+        main();
+    }, 3*60*1000);
 })();
