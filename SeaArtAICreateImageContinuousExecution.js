@@ -14,29 +14,7 @@
     'use strict';
 
     const queue = 1;
-    let timeIds = new Array();
-
-    function execInterval()
-    {
-        stopInterval();
-        timeIds.push(setInterval(main, interval()));
-        return;
-    }
-
-    function stopInterval()
-    {
-        if (0 == timeIds.length) {
-            return;
-        }
-
-        let id = null;
-        while (typeof (id = timeIds.shift()) !== "undefined")
-        {
-            clearInterval(id);
-        }
-
-        return;
-    }
+    let intervalId;
 
     function interval()
     {
@@ -67,7 +45,7 @@
 
     let index = 1;
     function main() {
-        execInterval();
+        intervalId ??= setInterval(main, interval());
 
         const button = document.getElementById("generate-btn");
         if (null == button)
@@ -133,5 +111,5 @@
     setTimeout(() => {
         createTextarea();
         main();
-    }, 3000);
+    }, 5*1000);
 })();
