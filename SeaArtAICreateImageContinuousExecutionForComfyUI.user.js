@@ -20,7 +20,7 @@
     function interval()
     {
         let now = new Date();
-        let delay = Math.ceil((now.getSeconds() + 2) / 300) * 300 - now.getSeconds();
+        let delay = Math.ceil((now.getSeconds() + 2) / 60) * 60 - now.getSeconds();
 
         return delay * 1000;
     }
@@ -48,6 +48,11 @@
             return;
         }
 
+        const stopper = document.getElementsByClassName("workflow-history-record-modal");
+        if (0 < stopper.length)
+        {
+            return;
+        }
         if (queue > document.getElementsByClassName("message-process-operate-box-btn").length)
         {
             buttons[0].click();
