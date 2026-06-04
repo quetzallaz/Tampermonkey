@@ -57,7 +57,7 @@
     }
 
     function execDownload(isAll) {
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
             let viewer = getViewer();
             if (!viewer) {
                 return;
@@ -131,18 +131,25 @@
         return document.getElementsByClassName("indicator-box-item");
     }
 
+    let timeoutId = 0;
     document.body.addEventListener('keydown', function (e) {
-        if ('t' === (e.ctrlKey && e.altKey && e.key)) {
+        if (!e.ctrlKey || !e.altKey) {
+            return;
+        }
+        if ('t' === e.key) {
             if (!getViewer()) {
                 return;
             }
             execDownload(true);
         }
-        else if ('g' === (e.ctrlKey && e.altKey && e.key)) {
+        else if ('g' === e.key) {
             if (!getViewer()) {
                 return;
             }
             execDownload(false);
+        }
+        else if ('z' === e.key) {
+            clearTimeout(timeoutId);
         }
     });
 })();
