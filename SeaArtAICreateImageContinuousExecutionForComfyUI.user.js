@@ -14,7 +14,7 @@
     'use strict';
 
     const queue = 1;
-    const execHours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+    const execHoursDefault = [2, 3, 4, 5, 6, 7];
     let intervalId;
 
     function interval()
@@ -29,22 +29,27 @@
     {
         let now = new Date();
         let hour = now.getHours();
-        return execHours.find(item => hour === item) ?? false;
+        return execHours().find(item => hour === item) ?? false;
+    }
+
+    function execHours()
+    {
+        if ( ! inputExecHours) {
+            return execHoursDefault;
+        }
+
+        if ("" === inputExecHours.value.trim()) {
+            return [];
+        }
+
+        let hours = inputExecHours.value.trim().split(",").map(Number);
+        return hours;
     }
 
     function main() {
         intervalId ??= setInterval(main, interval());
 
         if ( ! IsExecHours()) {
-            return;
-        }
-
-        let iframe = document.getElementById("myIframe");
-        let inner = iframe.contentDocument || iframe.contentWindow.document;
-
-        const buttons = inner.getElementsByClassName("work-flow-bottom-btn-main-text");
-        if (0 == buttons.length)
-        {
             return;
         }
 
@@ -55,13 +60,50 @@
         }
         if (queue > document.getElementsByClassName("message-process-operate-box-btn").length)
         {
-            buttons[0].click();
+            button.click();
         }
 
         return;
     }
 
+
+    let iframe = null;
+    let inner = null;
+    let button = null;
+    let inputExecHours = null;
+    function start()
+    {
+        setTimeout(() => {
+            iframe = document.getElementById("myIframe");
+            if ( ! iframe) {
+                start();
+                return;
+            }
+            inner = iframe.contentDocument || iframe.contentWindow.document;
+            if ( ! iframe) {
+                start();
+                return;
+            }
+            let buttons = inner.getElementsByClassName("work-flow-bottom-btn-main-text");
+            if (0 == buttons.length)
+            {
+                start();
+                return;
+            }
+            button = buttons[0];
+
+            inputExecHours = document.createElement("input");
+            inputExecHours.id = "exec-hours";
+            inputExecHours.type = 'text';
+            inputExecHours.value = execHoursDefault.join(", ");
+            let div = inner.getElementsByClassName("work-flow-bottom-btn")[0];
+            div.appendChild(inputExecHours);
+
+            main();
+        }, 1000);
+    }
+
     setTimeout(() => {
-        main();
-    }, 3*60*1000);
+        start();
+    }, 1*60*1000);
 })();
